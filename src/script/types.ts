@@ -23,7 +23,7 @@ export type ScriptCommand =
       ms: number;
       vol: number;
     }
-  | { type: "repeat"; count: number; body: ScriptCommand[] }
+  | { type: "repeat"; count: number; gapMs: number; body: ScriptCommand[] }
   | { type: "call"; name: string; args: CallArg[] };
 
 /** @deprecated Legacy robot block; use main + methods + call */

@@ -1,11 +1,13 @@
-/** Built-in sound names; each gets a tab on the Sounds screen and a `method` for `import sounds`. */
+/**
+ * Built-in sound tab ids: audio primitives you `call` after `import sounds`.
+ * `repeat` is a control-flow keyword for methods/main only — not a sound tab.
+ */
 export const SOUND_TEMPLATE_IDS = [
   "wave",
   "chirp",
   "rest",
   "sweep",
   "warble",
-  "repeat",
   "call",
 ] as const;
 export type SoundTemplateId = (typeof SOUND_TEMPLATE_IDS)[number];
@@ -29,10 +31,6 @@ const BUILTIN_SOUND_DEF: Record<
     params: ["freq", "depth", "rate", "ms", "vol"],
     body:
       "warble {{freq}}Hz depth {{depth}} rate {{rate}} for {{ms}}ms vol {{vol}}",
-  },
-  repeat: {
-    params: ["n", "freq", "ms", "vol"],
-    body: "repeat {{n}} {\n  chirp {{freq}}Hz for {{ms}}ms vol {{vol}}\n}",
   },
   call: { params: ["target"], body: "call {{target}}" },
 };
@@ -99,7 +97,8 @@ export const COMMAND_TEMPLATES: CommandTemplate[] = [
   {
     id: "repeat",
     label: "repeat",
-    pillInsert: "call repeat 2 440 100 75",
+    pillInsert:
+      "repeat 3 gap 40ms {\n  call YOUR_SOUND\n}",
     showOnMain: true,
     showOnMethods: true,
   },

@@ -66,23 +66,33 @@ export const SAMPLE_RATES = [8000, 11025, 16000, 22050, 44100, 48000] as const;
 export const DEFAULT_MAIN_SCRIPT = `import methods
 import sounds
 
-wave sine
 call curious_1
 `;
 
+/**
+ * Default methods: demo sequence + `repeat_sound` helper (repeat N times with gap
+ * between — body is usually `call` to a sound or method).
+ */
 export const DEFAULT_METHODS_SCRIPT = `method curious_1 {
-  wave sine
-  chirp 880Hz for 60ms vol 72
-  rest 20ms
-  chirp 1180Hz for 45ms vol 78
-  rest 15ms
-  sweep 950Hz to 1550Hz for 70ms vol 80
-  rest 30ms
-  chirp 640Hz for 95ms vol 68
-  rest 25ms
-  sweep 1450Hz to 1050Hz for 80ms vol 74
-  rest 20ms
-  warble 1250Hz depth 90 rate 16 for 110ms vol 70
+  // Sound tabs (import sounds): wave, chirp, rest, sweep, warble, call
+  call wave sine
+  call chirp 880 60 72
+  call rest 20
+  call chirp 1180 45 78
+  call rest 15
+  call sweep 950 1550 70 80
+  call rest 30
+  call chirp 640 95 68
+  call rest 25
+  call sweep 1450 1050 80 74
+  call rest 20
+  call warble 1250 90 16 110 70
+}
+
+method repeat_sound(target, n, gap_ms) {
+  repeat {{n}} gap {{gap_ms}}ms {
+    call {{target}}
+  }
 }
 `;
 
@@ -138,7 +148,7 @@ export function defaultProject(): ToneProjectV4 {
     name: "Untitled",
     mainScript: DEFAULT_MAIN_SCRIPT,
     methodsList: parseMethodsScriptToList(DEFAULT_METHODS_SCRIPT),
-    soundsList: mergeDefaultSounds([]),
+    soundsList: mergeDefaultSounds(builtinSoundTabDefaults()),
     manual: {
       frequencyHz: 440,
       durationMs: 250,

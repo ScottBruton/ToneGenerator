@@ -45,8 +45,10 @@ export function serializeCommands(
   for (const c of cmds) {
     if (c.type === "repeat") {
       const inner = serializeCommands(c.body, lineIndent + "  ");
+      const gap =
+        c.gapMs > 0 ? ` gap ${c.gapMs}ms` : "";
       parts.push(
-        `${lineIndent}repeat ${c.count} {\n${inner}\n${lineIndent}}`,
+        `${lineIndent}repeat ${c.count}${gap} {\n${inner}\n${lineIndent}}`,
       );
     } else {
       parts.push(lineIndent + serializeLeaf(c));

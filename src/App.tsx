@@ -558,18 +558,22 @@ export default function App() {
                   (comma-separated under the tabs) and use{" "}
                   <code>&#123;&#123;name&#125;&#125;</code> in the body; call with
                   positional or{" "}
-                  <code>name: value</code> arguments. Pills insert{" "}
-                  <code>call …</code> lines for reusable sounds. Replace{" "}
+                  <code>name: value</code> arguments.{" "}
+                  <code>repeat</code> belongs in main/methods:{" "}
+                  <code>
+                    repeat 3 gap 40ms &#123; call chirp 440 100 80 &#125;
+                  </code>{" "}
+                  (gap is silence between iterations; put any sound via{" "}
+                  <code>call</code> inside the block). Pills insert snippets; replace{" "}
                   <code>XXX</code> where shown.
                 </p>
               </>
             ) : (
               <p className="hint hint-tight sounds-tab-hint">
-                Built-in tabs (<code>wave</code> … <code>call</code>) keep their
-                names; use + for extra callable sounds. Edit parameters and{" "}
-                <code>&#123;&#123;placeholders&#125;&#125;</code> like on methods.
-                Double-click a
-                tab to rename (custom sounds only).
+                Built-in audio tabs: <code>wave</code>, <code>chirp</code>,{" "}
+                <code>rest</code>, <code>sweep</code>, <code>warble</code>,{" "}
+                <code>call</code>. Use <code>repeat</code> in main/methods, not here.
+                Use + for extra sounds. Double-click to rename custom tabs only.
               </p>
             )}
           </section>

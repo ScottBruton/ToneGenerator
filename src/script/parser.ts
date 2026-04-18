@@ -392,10 +392,16 @@ class Parser {
     const t = this.eat();
     if (t.k !== "num" || t.v < 1) throw new Error("repeat expects a positive count");
     const count = Math.floor(t.v);
-    if (this.eat().k !== "{") throw new Error("Expected '{' after repeat count");
+    let gapMs = 0;
+    const maybeGap = this.cur();
+    if (maybeGap.k === "id" && maybeGap.v.toLowerCase() === "gap") {
+      this.eat();
+      gapMs = this.readMs();
+    }
+    if (this.eat().k !== "{") throw new Error("Expected '{' after repeat header");
     const body = this.parseCommands();
     if (this.eat().k !== "}") throw new Error("Expected '}' after repeat body");
-    return { type: "repeat", count, body };
+    return { type: "repeat", count, gapMs, body };
   }
 }
 
@@ -485,6 +491,9 @@ export function expandCalls(
       const inner = expandCalls(c.body, registry, stack);
       for (let i = 0; i < c.count; i++) {
         out.push(...inner);
+        if (i < c.count - 1 && c.gapMs > 0) {
+          out.push({ type: "rest", ms: c.gapMs });
+        }
       }
     } else {
       out.push(c);
@@ -503,7 +512,12 @@ export function flattenCommands(cmds: ScriptCommand[]): ScriptCommand[] {
   const out: ScriptCommand[] = [];
   for (const c of cmds) {
     if (c.type === "repeat") {
-      for (let i = 0; i < c.count; i++) out.push(...flattenCommands(c.body));
+      for (let i = 0; i < c.count; i++) {
+        out.push(...flattenCommands(c.body));
+        if (i < c.count - 1 && c.gapMs > 0) {
+          out.push({ type: "rest", ms: c.gapMs });
+        }
+      }
     } else {
       out.push(c);
     }
